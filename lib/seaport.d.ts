@@ -1,8 +1,8 @@
-import { BigNumber } from "bignumber.js";
-import { EventSubscription } from "fbemitter";
 import * as Web3 from "web3";
-import { OpenSeaAPI } from "./api";
 import { Asset, ComputedFees, EventData, EventType, FeeMethod, OpenSeaAPIConfig, OpenSeaAsset, OpenSeaFungibleToken, Order, OrderSide, PartialReadonlyContractAbi, UnhashedOrder, UnsignedOrder, WyvernAsset, WyvernSchemaName } from "./types";
+import { EventSubscription } from "fbemitter";
+import { BigNumber } from "bignumber.js";
+import { OpenSeaAPI } from "./api";
 export declare class OpenSeaPort {
     web3: Web3;
     web3ReadOnly: Web3;

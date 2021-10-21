@@ -1,13 +1,32 @@
-import { BigNumber } from "bignumber.js"
-import { isValidAddress } from "ethereumjs-util"
-import { EventEmitter, EventSubscription } from "fbemitter"
-import * as _ from "lodash"
 import * as Web3 from "web3"
-import { WyvernProtocol } from "wyvern-js"
 import * as WyvernSchemas from "wyvern-schemas"
-import { Schema } from "wyvern-schemas/dist/types"
+import * as _ from "lodash"
 
-import { OpenSeaAPI } from "./api"
+import {
+  Asset,
+  ComputedFees,
+  ECSignature,
+  EventData,
+  EventType,
+  FeeMethod,
+  HowToCall,
+  Network,
+  OpenSeaAPIConfig,
+  OpenSeaAsset,
+  OpenSeaFungibleToken,
+  Order,
+  OrderSide,
+  PartialReadonlyContractAbi,
+  SaleKind,
+  TokenStandardVersion,
+  UnhashedOrder,
+  UnsignedOrder,
+  WyvernAsset,
+  WyvernAtomicMatchParameters,
+  WyvernFTAsset,
+  WyvernNFTAsset,
+  WyvernSchemaName
+} from "./types"
 import {
   CHEEZE_WIZARDS_BASIC_TOURNAMENT_ADDRESS,
   CHEEZE_WIZARDS_BASIC_TOURNAMENT_RINKEBY_ADDRESS,
@@ -50,7 +69,6 @@ import {
   DecentralandEstates,
   ERC20,
   ERC721,
-  getMethod,
   StaticCheckCheezeWizards,
   StaticCheckDecentralandEstates,
   StaticCheckTxOrigin,
@@ -58,48 +76,15 @@ import {
   UniswapFactory,
   WrappedNFT,
   WrappedNFTFactory,
-  WrappedNFTLiquidationProxy
+  WrappedNFTLiquidationProxy,
+  getMethod
 } from "./contracts"
+import { EventEmitter, EventSubscription } from "fbemitter"
 import {
   MAX_ERROR_LENGTH,
   requireOrderCalldataCanMatch,
   requireOrdersCanMatch
 } from "./debugging"
-import {
-  Asset,
-  ComputedFees,
-  ECSignature,
-  EventData,
-  EventType,
-  FeeMethod,
-  HowToCall,
-  Network,
-  OpenSeaAPIConfig,
-  OpenSeaAsset,
-  OpenSeaFungibleToken,
-  Order,
-  OrderSide,
-  PartialReadonlyContractAbi,
-  SaleKind,
-  TokenStandardVersion,
-  UnhashedOrder,
-  UnsignedOrder,
-  WyvernAsset,
-  WyvernAtomicMatchParameters,
-  WyvernFTAsset,
-  WyvernNFTAsset,
-  WyvernSchemaName
-} from "./types"
-import {
-  encodeAtomicizedBuy,
-  encodeAtomicizedSell,
-  encodeAtomicizedTransfer,
-  encodeBuy,
-  encodeCall,
-  encodeProxyCall,
-  encodeSell,
-  encodeTransferCall
-} from "./utils/schema"
 import {
   annotateERC20TransferABI,
   annotateERC721TransferABI,
@@ -124,6 +109,22 @@ import {
   sendRawTransaction,
   validateAndFormatWalletAddress
 } from "./utils/utils"
+import {
+  encodeAtomicizedBuy,
+  encodeAtomicizedSell,
+  encodeAtomicizedTransfer,
+  encodeBuy,
+  encodeCall,
+  encodeProxyCall,
+  encodeSell,
+  encodeTransferCall
+} from "./utils/schema"
+
+import { BigNumber } from "bignumber.js"
+import { OpenSeaAPI } from "./api"
+import { Schema } from "wyvern-schemas/dist/types"
+import { WyvernProtocol } from "wyvern-js"
+import { isValidAddress } from "ethereumjs-util"
 
 export class OpenSeaPort {
   // Web3 instance to use
@@ -745,14 +746,14 @@ export class OpenSeaPort {
       referrerAddress,
     })
 
-    await delay(1000)
+    await delay(3000)
 
     // NOTE not in Wyvern exchange code:
     // frontend checks to make sure
     // token is approved and sufficiently available
     await this._buyOrderValidationAndApprovals({ order, accountAddress })
 
-    await delay(1000)
+    await delay(3000)
 
     const hashedOrder = {
       ...order,
@@ -771,7 +772,7 @@ export class OpenSeaPort {
       ...signature,
     }
 
-    await delay(1000)
+    await delay(3000)
 
     return this.validateAndPostOrder(orderWithSignature)
   }
